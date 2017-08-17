@@ -1,0 +1,7 @@
+services:
+
+    pedrotroller.symfony_roadmap_checker.data_collector:
+        public: false
+        class: PedroTroller\SymfonyRoadmapChecker\DataCollector
+        tags:
+            - { name: data_collector, template: 'SymfonyRoadmapCheckerBundle::wdt.html.twig', id: roadmap_checker, priority: 300 }

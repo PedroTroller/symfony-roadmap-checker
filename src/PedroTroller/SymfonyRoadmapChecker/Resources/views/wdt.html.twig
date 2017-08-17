@@ -1,0 +1,64 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+
+{% block toolbar %}
+    {% set version = collector.information %}
+
+    {% set icon %}
+        <a href="http://symfony.com/roadmap?version={{ version.version }}" target="_blank">
+            {% if version.underMaintenanceSupport and version.underSecuritySupport %}
+                <img src="{{ block('green_icon') }}" width="28" height="28" style="width: 28px; height: 28px;" />
+            {% elseif false == version.underMaintenanceSupport and version.underSecuritySupport %}
+                <img src="{{ block('orange_icon') }}" width="28" height="28" style="width: 28px; height: 28px;" />
+                <span class="sf-toolbar-status sf-toolbar-status-yellow">Security fix only</span>
+            {% else %}
+                <img src="{{ block('red_icon') }}" width="28" height="28" style="width: 28px; height: 28px;" />
+                <span class="sf-toolbar-status sf-toolbar-status-red">Not maintained</span>
+            {% endif %}
+        </a>
+    {% endset %}
+
+    {% set text %}
+        {% set version = collector.information %}
+
+        <div class="sf-toolbar-info-piece">
+            <b style="width: 200px">Maintenance support</b>
+            {% if version.endOfMaintenanceSupport is null %}
+                <span class="sf-toolbar-status sf-toolbar-status-red">support ended</span>
+            {% elseif version.isUnderMaintenanceSupport %}
+                <span class="sf-toolbar-status sf-toolbar-status-green">supported until {{ version.endOfMaintenanceSupport|date('m/Y') }}</span>
+            {% else %}
+                <span class="sf-toolbar-status sf-toolbar-status-red">expired since {{ version.endOfMaintenanceSupport|date('m/Y') }}</span>
+            {% endif %}
+        </div>
+
+        <div class="sf-toolbar-info-piece">
+            <b style="width: 200px">Security support</b>
+            {% if version.endOfSecuritySupport is null %}
+                <span class="sf-toolbar-status sf-toolbar-status-red">support ended</span>
+            {% elseif version.isUnderSecuritySupport %}
+                <span class="sf-toolbar-status sf-toolbar-status-green">supported until {{ version.endOfSecuritySupport|date('m/Y') }}</span>
+            {% else %}
+                <span class="sf-toolbar-status sf-toolbar-status-red">expired since {{ version.endOfSecuritySupport|date('m/Y') }}</span>
+            {% endif %}
+        </div>
+
+        <center>
+            <a href="https://symfony.com/roadmap">View the Symfony Roadmap</a>
+        </center>
+    {% endset %}
+
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { 'link': false }) }}
+{% endblock %}
+
+{% block green_icon -%}
+data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QgRDQoQJplyAQAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAR/SURBVGje3VrRS1R5FP7OufdqOkNukOSLIj1l4BoZUj1os6EZTY406IbQg70ERctCD/0NPQSyUbAv+rAg7shIoyPJxu6kD67EGpZQ+yRSLxsu1MhMovfec/Yh7zCV5hqac/3eLlzu73x85/c7557vR/gCNMejeBiNAwCiAyGaC9QEQBxkdWttLm4ideuFjUpWqXbIDACAqU5WiOdZ3FdKxrQly+NCxixUMgezL7Lxiyn9+NubAW3m5e/iHfgjOph7rkteb1DiUwpqVaImBfPmFhch1XGCjpHKo6fhO4/XW2vLiLTHWnC/8zcAwLGRK6dXuOSmEB9RUDm2AARdYJWZIlm69df5n3//eM0tIXIy0Y3JSB+OJy7vXTKCfQ5b7QAY2wMxxb5f4ma6pyK9i97aG+GzwRx+cAMAYLrvrKPJa+ezZtlLh60L20gCANhh60LWLHt5NHntvOm+s/Jj2TSRc4NhPD97G42JruDb4oqeZd4zLMRl+EoQ4rJl3jP8triipzHRFXx+9jbODYY3R+TcYBijHUl09oesN+aBYZfMq9ghuGRefWMeGO7sD1mjHcl1ydBa6fT87G109oesv8u+/dMlsx4FAEOd6UPpZydiXSnbi3HDzd6Y6Aq+MQ8MC3EIBQRWSe1zXrdNRPozn1XkZKIbpvvOeltc0bOT6bSBMve+Wf7nR8cotfNPM86vE5ORPmSK9rcWKglvz2SK9rdORvrQHmv5UBGvih5PXN6bNctefs3T6QtTLB1w0lVTkd5FL3YGkGsFloxgX6GT8I7mJSPYlx87N8ejubZjtWL7Ag5b7cdGrpz2Gk32Os0VLrm5zRV7yzNsNWY8jMbfB16XvN4gxEfgMwjxkbrk9QYA4OhAiFZb8XK/EVFQuRKfig6EiOcCNQEFtcKnUFDrXKAmwCAOKlGTb4kQNYE4yKxu7Wb/7ApLEWZWt5ZtLvatGh5sLm5iUrfe70RI3XoWNir9TkTYqGRWqfY7EVapZm/u5Gc4ZAYYuwRsqpP1OwlTnSwL8bzvNzvxPLO4r3yfVuK+YiVj2u9ElIxptmR53O9ELFkeZyFjliDi26oOESFjlqGSIVXfqkKq41DJ8MHsiyxBx/yriI4dzL7IcvxiSknlEUEXfEhigVQexS+mlAHgafjOY1aZ8WGPNeO5XLlxUJEs3QLgp00vqzGjOR79cPZbl/whvmrkFH5bIvbQ0/BP0Zw6wPuRKQCUuJluVkn7IKXSJW6mOz/23Mi0PdaCqUjvoqUrlwq+AOrKpalI72J7rCU3Mt01tsKuMXo++bE6/OAGJiL9mZr0zBlDnekCUmK6Jj1zZiLSn1nL4f2EiOeexrpS9qH0sxOskioEJTz/0HObNyQCAJ57GutK2fuc122GOvd2ck/sc163eSRGO5LrVPnPwHNPG4e+tzJF+1ttKvrlaxlBrJK2dOVScOXfsYkLv67p5G6oSH6aAYBjlNpPwndHAk66yhR7aJs7ADHFHgo46aon4bsjjlFq58eyft/1P7ErLtV42BXXnPJRiBfP/gNl1H2OGyydFAAAAABJRU5ErkJggg==
+{%- endblock green_icon %}
+
+{% block orange_icon -%}
+data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QgRDQoBTClS8wAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAOuSURBVGje3dpbiFVVHMfxz9ozOlFkiWSEkt0088EaEbIeTKVgaqyoh9TZRhEEQtjlwaT7S0HUQxcSCqQo2RYIhWXSS9BEUTJkJmkRlWFY2oPQVXOm2T2cfXA8s+fMzNnnzMyZH+yXsw7/tb/r8v//1/rvoE5KE+djJZbhCsxAhFD+C/rxB/aiGztD7Nt69B8KvHgbzsFqrMPFNZo6jFfwOo6E2D9jBpImOtCVQUxRP72DLSLbwxr9DQNJE/PwEpbgTI3RcezGPSG2p64gaaIFt2MTTjd2ehxPhlhaGCRNTMcTuM/4aBvuD7FfagZJE3PwBpYaX+3FqmoeLlSBmIV3scjE0G9YHmL7RwySJqbhLVxfQ4f9+Ag9aMlpn4VVWYwZrfbhhhA7OFKQ13BnjSPXi3tD7OUhbC/GZ2it0f4O3BJifQN/jHI6eqQARFlTq7SdVtD2SjxV+WNUAdGODSa+HkwTV+WCpImpeAhnaQ5tzt550Iwsxk2aR/Nw1ykgaSJgPdqaCKQVq9PEjJMzEszMEsBm0zW47CRIar3m1W0D98i6JgZZC1GaWJid5ppV09Ot2iMs1+xKdUa4UvNraYS5kwBkYTTGJ75GaWZUIAudSApRjeeCCaeI4Q/2zQLSNwk40gjHJgHI0Qg/TAKQfRG+aIDh/6q0NWIpf9KKD+tstAW3ponZ8m9RZjfAU+4I2cHqd0xr0mX1t+Ds8shsaeL9sS106SuDvNDAjn7FoQba33ryYNXqe+yscwff4EasyJ5rG+BYevBV6bRejiiJFXXc+PvRGWI/nRK1Stc33Ur1lXp4xodD7BkV3qMH79ehgz5sroSAEDuBjYyuGjWEfsTmgSlKuZM/8axSxaiYF2FXlfZDdQrCG0Ls6CCQDKYbLxZNqYeIHwP7LBpHNoXY9kqjldO/Uem2vFadoXph6BK1V4DhS8EDeaOTp5WMvBCZE9nvThNXD0pRE3PxdAGIg1gbuvTmLYP8vDgxX6kWUevoHcGbeC/zMNcp3UHNqdHecSwLcf7+G66GeGG2zM4d5+h9DIuq1RCrbroQO4AF+HgcIXZjwXCfegzrPTIX14HHxuE0+Rw68mLSqJZWxTILuDTLbdobDPAd1mBPiEcWPGv9FiXGo7hA8ZpgWf9mCebzIR59Elvk66ApuBmdWe40v0CqsQsf4O0Q+6vWKFzs+iIR4Tyl+vmS7LkcF+XMVi8O4Gt8jk/xMw6HeHBsGFOQqpCvCtq06Ue/E+GOuiSLufofPN3exMQ1LusAAAAASUVORK5CYII=
+{%- endblock orange_icon %}
+
+{% block red_icon -%}
+data:image/png;base64,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
+{%- endblock red_icon %}
